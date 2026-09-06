@@ -21,3 +21,9 @@ let finalAmount = calculateSavings(
 )
 
 print("\(name) saved $\(finalAmount) in total.")
+
+// Week1 issues
+// Issue: My Playground could not open because required files were missing.
+// Fix: I recreated contents.xcplayground and Contents.swift.
+// Coding error: Wrote some variables in int format
+// Coding error fixed
