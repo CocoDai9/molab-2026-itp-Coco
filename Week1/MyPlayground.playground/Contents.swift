@@ -1,23 +1,75 @@
+import Foundation
+
 var name = "Coco"
-var weeklySaving = 15
-var numberOfWeeks = 5
+var weeklySaving = 15.0
+var savingsGoal = 100.0
+var numberOfWeeks = 8
 
-func calculateSavings(amountPerWeek: Int, weeks: Int) -> Int {
-    var total = 0
+// Creates a text progress bar.
+func makeProgressBar(current: Double, goal: Double) -> String {
+    let barLength = 10
+    let progress = min(current / goal, 1.0)
+    let filledLength = Int(progress * Double(barLength))
+    let emptyLength = barLength - filledLength
 
-    print("\(name)'s Saving Plan")
+    let filledPart = String(repeating: "#", count: filledLength)
+    let emptyPart = String(repeating: "-", count: emptyLength)
 
-    for week in 1...weeks {
-        total += amountPerWeek
-        print("Week \(week): $\(total)")
-    }
-
-    return total
+    return "[\(filledPart)\(emptyPart)]"
 }
 
-let finalAmount = calculateSavings(
-    amountPerWeek: weeklySaving,
+// Calculates and displays the savings plan.
+func runSavingsPlan(
+    person: String,
+    weeklyAmount: Double,
+    goal: Double,
+    weeks: Int
+) {
+    // Issue handled: zero or negative values would make the calculation invalid.
+    guard goal > 0, weeks > 0, weeklyAmount >= 0 else {
+        print("Error: Goal and weeks must be greater than zero.")
+        return
+    }
+
+    var total = 0.0
+
+    print("\(person)'s Saving Plan")
+    print("Goal: $\(Int(goal))")
+    print()
+
+    for week in 1...weeks {
+        var deposit = weeklyAmount
+
+        // Coco saves an extra $5 every fourth week.
+        if week % 4 == 0 {
+            deposit += 5
+        }
+
+        total += deposit
+
+        let percentage = min((total / goal) * 100, 100)
+        let progressBar = makeProgressBar(current: total, goal: goal)
+
+        print(
+            "Week \(week): deposited $\(Int(deposit)), " +
+            "total $\(Int(total)) \(progressBar) " +
+            "\(Int(percentage))%"
+        )
+    }
+
+    print()
+
+    if total >= goal {
+        print("\(person) reached the saving goal!")
+    } else {
+        let remaining = goal - total
+        print("\(person) still needs to save $\(Int(remaining)).")
+    }
+}
+
+runSavingsPlan(
+    person: name,
+    weeklyAmount: weeklySaving,
+    goal: savingsGoal,
     weeks: numberOfWeeks
 )
-
-print("\(name) saved $\(finalAmount) in total.")
