@@ -24,11 +24,11 @@ func runSavingsPlan(
     weeklyAmount: Double,
     goal: Double,
     weeks: Int
-) {
+) -> Double {
     // Issue handled: zero or negative values would make the calculation invalid.
     guard goal > 0, weeks > 0, weeklyAmount >= 0 else {
-        print("Error: Goal and weeks must be greater than zero.")
-        return
+        print("Error: Invalid saving plan values.")
+        return 0
     }
 
     var total = 0.0
@@ -65,21 +65,23 @@ func runSavingsPlan(
         let remaining = goal - total
         print("\(person) still needs to save $\(Int(remaining)).")
     }
+
+    return total
 }
 
-runSavingsPlan(
+let finalAmount = runSavingsPlan(
     person: name,
     weeklyAmount: weeklySaving,
     goal: savingsGoal,
     weeks: numberOfWeeks
 )
 
-
-print("\(name) saved $\(finalAmount) in total.")
+print("\(name) saved $\(Int(finalAmount)) in total.")
 
 // Week1 issues
 // Issue: My Playground could not open because required files were missing.
 // Fix: I recreated contents.xcplayground and Contents.swift.
-// Coding error: Wrote some variables in int format
-// Coding error fixed
-
+// Coding error: Some values were originally stored as Int values.
+// Fix: I changed the money values to Double values.
+// Coding error: finalAmount was used before it was defined.
+// Fix: I made runSavingsPlan return total and stored it in finalAmount.
