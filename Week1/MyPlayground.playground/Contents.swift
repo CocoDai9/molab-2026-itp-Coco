@@ -3,7 +3,6 @@ var symbols = ["*", "#", "+", "."]
 var rows = 5
 var columns = 8
 
-// Generates one line of random symbols.
 func generateLine(length: Int) -> String {
     var line = ""
 
@@ -15,7 +14,6 @@ func generateLine(length: Int) -> String {
     return line
 }
 
-// Generates the complete random pattern.
 func generatePattern(rowCount: Int, columnCount: Int) {
     print("\(name)'s Random Pattern")
     print()
