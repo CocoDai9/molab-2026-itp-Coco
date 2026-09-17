@@ -1,150 +1,104 @@
 import UIKit
 import PlaygroundSupport
 
-let dim: CGFloat = 1024
-let gridCount = 12
-let margin: CGFloat = 96
-let lineWidth: CGFloat = 5
-let background = UIColor.white
-let wallColor = UIColor.black
-precondition(gridCount >= 2)
-var walls = Array(
-    repeating: [true, true, true, true],
-    count: gridCount * gridCount
-)
-var visited = Array(
-    repeating: false,
-    count: gridCount * gridCount
-)
-var stack = [0]
-let dx = [0, 1, 0, -1]
-let dy = [-1, 0, 1, 0]
-visited[0] = true
-while let current = stack.last {
-    let row = current / gridCount
-    let column = current % gridCount
-    var choices: [Int] = []
-    for direction in 0..<4 {
-        let x = column + dx[direction]
-        let y = row + dy[direction]
-        let isInside = x >= 0 && x < gridCount
-            && y >= 0 && y < gridCount
-        if isInside && !visited[y * gridCount + x] {
-            choices.append(direction)
-        }
-    }
-    if let direction = choices.randomElement() {
-        let nextRow = row + dy[direction]
-        let nextColumn = column + dx[direction]
-        let next = nextRow * gridCount + nextColumn
-        let opposite = (direction + 2) % 4
-        walls[current][direction] = false
-        walls[next][opposite] = false
-        visited[next] = true
-        stack.append(next)
-    } else {
-        stack.removeLast()
-    }
-}
-
-walls[0][3] = false
-walls[walls.count - 1][1] = false
-let mazeWidth = dim - margin * 2
-let cellSize = mazeWidth / CGFloat(gridCount)
+let dim = 1024.0
 let format = UIGraphicsImageRendererFormat()
-format.scale = 1
-format.opaque = true
-format.preferredRange = .standard
-
-let renderer = UIGraphicsImageRenderer(
-    size: CGSize(width: dim, height: dim),
-    format: format
-)
+format.scale = 1 // 1 point = 1 pixel
+let renderer = UIGraphicsImageRenderer(size: CGSize(width: dim, height: dim), format: format)
 
 let image = renderer.image { context in
     let ctx = context.cgContext
-    background.setFill()
+    UIColor.white.setFill()
     context.fill(renderer.format.bounds)
-
-    func cellRect(_ index: Int) -> CGRect {
-        let row = index / gridCount
-        let column = index % gridCount
-        let x = margin + CGFloat(column) * cellSize
-        let y = margin + CGFloat(row) * cellSize
-
-        return CGRect(
-            x: x,
-            y: y,
-            width: cellSize,
-            height: cellSize
-        )
-    }
-
-    func drawIcon(_ icon: NSString, in cell: Int) {
-        let rect = cellRect(cell)
-        let font = UIFont.systemFont(ofSize: cellSize * 0.62)
-        let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        let size = icon.size(withAttributes: attributes)
-        let x = rect.midX - size.width / 2
-        let y = rect.midY - size.height / 2
-        icon.draw(at: CGPoint(x: x, y: y), withAttributes: attributes)
-    }
-
-    ctx.setStrokeColor(wallColor.cgColor)
-    ctx.setLineWidth(lineWidth)
+    ctx.setStrokeColor(UIColor.black.cgColor)
+    ctx.setLineWidth(6)
     ctx.setLineCap(.round)
 
-    for index in walls.indices {
-        let rect = cellRect(index)
-        let cellWalls = walls[index]
+    // 坐标从左上角开始：x 向右增加，y 向下增加。
+    // 每两行画一面墙：move 是起点，addLine 是终点。
 
-        if cellWalls[0] {
-            ctx.move(to: CGPoint(x: rect.minX, y: rect.minY))
-            ctx.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
-        }
-        if cellWalls[3] {
-            ctx.move(to: CGPoint(x: rect.minX, y: rect.minY))
-            ctx.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
-        }
-        if index / gridCount == gridCount - 1 && cellWalls[2] {
-            ctx.move(to: CGPoint(x: rect.minX, y: rect.maxY))
-            ctx.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
-        }
-        if index % gridCount == gridCount - 1 && cellWalls[1] {
-            ctx.move(to: CGPoint(x: rect.maxX, y: rect.minY))
-            ctx.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
-        }
-    }
+    // 外框：左上方留入口，右下方留出口。
+    ctx.move(to: CGPoint(x: 100, y: 100))
+    ctx.addLine(to: CGPoint(x: 900, y: 100))
+
+    ctx.move(to: CGPoint(x: 100, y: 200))
+    ctx.addLine(to: CGPoint(x: 100, y: 900))
+
+    ctx.move(to: CGPoint(x: 100, y: 900))
+    ctx.addLine(to: CGPoint(x: 900, y: 900))
+
+    ctx.move(to: CGPoint(x: 900, y: 100))
+    ctx.addLine(to: CGPoint(x: 900, y: 800))
+
+    // 内部横墙：缺口交替在右边和左边，形成曲折的通路。
+    ctx.move(to: CGPoint(x: 100, y: 200))
+    ctx.addLine(to: CGPoint(x: 800, y: 200))
+
+    ctx.move(to: CGPoint(x: 200, y: 300))
+    ctx.addLine(to: CGPoint(x: 900, y: 300))
+
+    ctx.move(to: CGPoint(x: 100, y: 400))
+    ctx.addLine(to: CGPoint(x: 800, y: 400))
+
+    ctx.move(to: CGPoint(x: 200, y: 500))
+    ctx.addLine(to: CGPoint(x: 900, y: 500))
+
+    ctx.move(to: CGPoint(x: 100, y: 600))
+    ctx.addLine(to: CGPoint(x: 800, y: 600))
+
+    ctx.move(to: CGPoint(x: 200, y: 700))
+    ctx.addLine(to: CGPoint(x: 900, y: 700))
+
+    ctx.move(to: CGPoint(x: 100, y: 800))
+    ctx.addLine(to: CGPoint(x: 800, y: 800))
+
+    // 短墙：增加转弯，但留下足够空间通过。
+    ctx.move(to: CGPoint(x: 400, y: 100))
+    ctx.addLine(to: CGPoint(x: 400, y: 150))
+
+    ctx.move(to: CGPoint(x: 600, y: 300))
+    ctx.addLine(to: CGPoint(x: 600, y: 250))
+
+    ctx.move(to: CGPoint(x: 400, y: 400))
+    ctx.addLine(to: CGPoint(x: 400, y: 350))
+
+    ctx.move(to: CGPoint(x: 600, y: 500))
+    ctx.addLine(to: CGPoint(x: 600, y: 450))
+
+    ctx.move(to: CGPoint(x: 400, y: 600))
+    ctx.addLine(to: CGPoint(x: 400, y: 550))
+
+    ctx.move(to: CGPoint(x: 600, y: 700))
+    ctx.addLine(to: CGPoint(x: 600, y: 650))
+
+    ctx.move(to: CGPoint(x: 400, y: 800))
+    ctx.addLine(to: CGPoint(x: 400, y: 750))
 
     ctx.drawPath(using: .stroke)
-    drawIcon("🐭", in: 0)
-    drawIcon("🧀", in: walls.count - 1)
+
+    // 直接指定老鼠和奶酪的位置。
+    let font = UIFont.systemFont(ofSize: 48)
+    ("🐭" as NSString).draw(at: CGPoint(x: 120, y: 120), withAttributes: [.font: font])
+    ("🧀" as NSString).draw(at: CGPoint(x: 820, y: 820), withAttributes: [.font: font])
 }
 
 image
 
+// 在 Playground 中显示图片。
 let preview = UIImageView(image: image)
 preview.frame = CGRect(x: 0, y: 0, width: 512, height: 512)
 preview.contentMode = .scaleAspectFit
 PlaygroundPage.current.liveView = preview
 
-let data = image.pngData()
-let folder = FileManager.default.urls(
-    for: .documentDirectory,
-    in: .userDomainMask
-).first!
-let fileName = "Maze1024-\(UUID().uuidString).png"
-let filePath = folder.appendingPathComponent(fileName)
+// 保存 PNG，控制台会显示文件位置。
+let data = image.pngData()!
+let folder = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+let filePath = folder.appendingPathComponent("Maze1024-\(UUID().uuidString).png")
 
-if let data {
-    do {
-        try FileManager.default.createDirectory(
-            at: folder,
-            withIntermediateDirectories: true
-        )
-        try data.write(to: filePath)
-        print("Saved PNG:\n\(filePath.path)")
-    } catch {
-        print("Could not save PNG: \(error.localizedDescription)")
-    }
+do {
+    try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+    try data.write(to: filePath)
+    print("Saved PNG: \(filePath.path)")
+} catch {
+    print("Could not save PNG: \(error.localizedDescription)")
 }
