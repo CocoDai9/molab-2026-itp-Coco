@@ -1,21 +1,13 @@
-//: # Help the Mouse Find the Cheese — 1024 × 1024
-//: Uses UIGraphicsImageRenderer, Core Graphics walls, and PNG export.
-//: Inspired by https://github.com/molab-itp/01-UIRender-playground
-//: Run this iOS playground in Xcode to make a new solvable maze.
-
 import UIKit
 import PlaygroundSupport
 
-// MARK: - Customize
 let dim: CGFloat = 1024
-let gridCount = 12  // More cells make a harder maze. Use at least 2.
+let gridCount = 12 
 let margin: CGFloat = 96
 let lineWidth: CGFloat = 5
 let background = UIColor(red: 1.00, green: 0.98, blue: 0.92, alpha: 1)
 let wallColor = UIColor(red: 0.13, green: 0.23, blue: 0.26, alpha: 1)
 
-// Make connected passages by visiting each cell once.
-// Wall order: top, right, bottom, left.
 precondition(gridCount >= 2)
 var walls = Array(repeating: [true, true, true, true], count: gridCount * gridCount)
 var visited = Array(repeating: false, count: gridCount * gridCount)
@@ -52,7 +44,6 @@ walls[walls.count - 1][1] = false    // Exit.
 
 let cellSize = (dim - margin * 2) / CGFloat(gridCount)
 
-// Explicit scale ensures exactly 1024 × 1024 pixels, including on Retina.
 let format = UIGraphicsImageRendererFormat()
 format.scale = 1
 format.opaque = true
@@ -87,7 +78,6 @@ var image = renderer.image { (context) in
                  in: CGRect(x: 0, y: 20, width: dim, height: 48),
                  font: .systemFont(ofSize: 26, weight: .bold), color: wallColor)
 
-    // Soft highlights mark the start and goal without covering their walls.
     UIColor(red: 0.80, green: 0.93, blue: 0.86, alpha: 1).setFill()
     context.fill(cellRect(0).insetBy(dx: 4, dy: 4))
     UIColor(red: 1.00, green: 0.89, blue: 0.57, alpha: 1).setFill()
@@ -99,7 +89,7 @@ var image = renderer.image { (context) in
     for index in walls.indices {
         let rect = cellRect(index)
         let cellWalls = walls[index]
-        // Draw shared walls once: top/left, plus bottom/right outer edges.
+    
         if cellWalls[0] {
             ctx.move(to: CGPoint(x: rect.minX, y: rect.minY))
             ctx.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
@@ -119,25 +109,21 @@ var image = renderer.image { (context) in
     }
     ctx.drawPath(using: .stroke)
 
-    // System emoji are drawn into the exported PNG; no image files needed.
     let iconFont = UIFont.systemFont(ofSize: cellSize * 0.62)
     drawCentered("🐭", in: cellRect(0), font: iconFont, color: wallColor)
     drawCentered("🧀", in: cellRect(walls.count - 1), font: iconFont, color: wallColor)
 
 }
 
-// Inspect this value using the playground's Quick Look button.
 image
 precondition(image.cgImage?.width == 1024 && image.cgImage?.height == 1024,
              "The exported image must be exactly 1024 × 1024 pixels.")
 
-// Display a smaller preview without changing the exported image dims.
 let preview = UIImageView(image: image)
 preview.frame = CGRect(x: 0, y: 0, width: 512, height: 512)
 preview.contentMode = .scaleAspectFit
 PlaygroundPage.current.liveView = preview
 
-// Get the image as PNG data and write it to the Documents folder.
 let data = image.pngData()
 let folder = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 let filePath = folder.appendingPathComponent("Maze1024-\(UUID().uuidString).png")
