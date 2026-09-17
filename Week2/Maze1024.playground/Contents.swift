@@ -30,49 +30,15 @@ let image = renderer.image { context in
     ctx.move(to: CGPoint(x: 900, y: 100))
     ctx.addLine(to: CGPoint(x: 900, y: 800))
 
-    // 内部横墙：缺口交替在右边和左边，形成曲折的通路。
-    ctx.move(to: CGPoint(x: 100, y: 200))
-    ctx.addLine(to: CGPoint(x: 800, y: 200))
+    // 只保留三面内部墙：从右边、左边、右边绕过去。
+    ctx.move(to: CGPoint(x: 100, y: 300))
+    ctx.addLine(to: CGPoint(x: 700, y: 300))
 
-    ctx.move(to: CGPoint(x: 200, y: 300))
-    ctx.addLine(to: CGPoint(x: 900, y: 300))
-
-    ctx.move(to: CGPoint(x: 100, y: 400))
-    ctx.addLine(to: CGPoint(x: 800, y: 400))
-
-    ctx.move(to: CGPoint(x: 200, y: 500))
+    ctx.move(to: CGPoint(x: 300, y: 500))
     ctx.addLine(to: CGPoint(x: 900, y: 500))
 
-    ctx.move(to: CGPoint(x: 100, y: 600))
-    ctx.addLine(to: CGPoint(x: 800, y: 600))
-
-    ctx.move(to: CGPoint(x: 200, y: 700))
-    ctx.addLine(to: CGPoint(x: 900, y: 700))
-
-    ctx.move(to: CGPoint(x: 100, y: 800))
-    ctx.addLine(to: CGPoint(x: 800, y: 800))
-
-    // 短墙：增加转弯，但留下足够空间通过。
-    ctx.move(to: CGPoint(x: 400, y: 100))
-    ctx.addLine(to: CGPoint(x: 400, y: 150))
-
-    ctx.move(to: CGPoint(x: 600, y: 300))
-    ctx.addLine(to: CGPoint(x: 600, y: 250))
-
-    ctx.move(to: CGPoint(x: 400, y: 400))
-    ctx.addLine(to: CGPoint(x: 400, y: 350))
-
-    ctx.move(to: CGPoint(x: 600, y: 500))
-    ctx.addLine(to: CGPoint(x: 600, y: 450))
-
-    ctx.move(to: CGPoint(x: 400, y: 600))
-    ctx.addLine(to: CGPoint(x: 400, y: 550))
-
-    ctx.move(to: CGPoint(x: 600, y: 700))
-    ctx.addLine(to: CGPoint(x: 600, y: 650))
-
-    ctx.move(to: CGPoint(x: 400, y: 800))
-    ctx.addLine(to: CGPoint(x: 400, y: 750))
+    ctx.move(to: CGPoint(x: 100, y: 700))
+    ctx.addLine(to: CGPoint(x: 700, y: 700))
 
     ctx.drawPath(using: .stroke)
 
