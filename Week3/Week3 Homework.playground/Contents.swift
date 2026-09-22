@@ -1,7 +1,17 @@
 import SwiftUI
+import PlaygroundSupport
 
 struct ContentView: View {
-    let emojis = ["🌸", "🌷", "🌹", "🍀"]
+    var body: some View {
+        TabView {
+            ArtView().tabItem { Text("Art") }
+            Text("Random Emoji Art").tabItem { Text("About") }
+        }
+    }
+}
+
+struct ArtView: View {
+    let emojis = ["🌸", "⭐️", "❤️", "🍀"]
     @State var picture = [String]()
 
     var body: some View {
@@ -12,7 +22,8 @@ struct ContentView: View {
                         .font(.largeTitle)
                 }
             }
-            Button("New Garden") {
+
+            Button("New Picture") {
                 picture = (0..<16).map { _ in emojis.randomElement()! }
             }
         }
@@ -23,6 +34,4 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}
+PlaygroundPage.current.setLiveView(ContentView())
