@@ -1,17 +1,5 @@
 import SwiftUI
 
-//struct ContentView: View {
-//    var body: some View {
-//        TabView {
-//            ArtView()
-//                .tabItem { Text("Art") }
-//
-//            Text("Random Emoji Art")
-//                .tabItem { Text("About") }
-//        }
-//    }
-//}
-
 struct ContentView: View {
     let emojis = ["🌸", "🌷", "🌹", "🍀"]
     @State var picture = [String]()
