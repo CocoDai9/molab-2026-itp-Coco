@@ -16,6 +16,7 @@ final class PhotoLibrary: NSObject, ObservableObject {
 
 struct ContentView: View {
     @StateObject private var library = PhotoLibrary()
+    @AppStorage("showPhotoNumbers") private var showPhotoNumbers = true
     @State private var tripItems: [PhotosPickerItem] = []
     @State private var dinnerItems: [PhotosPickerItem] = []
 
@@ -37,15 +38,17 @@ struct ContentView: View {
     private var eventList: some View {
         ScrollView {
             VStack(spacing: 20) {
+                Toggle("Show Photo Numbers", isOn: $showPhotoNumbers)
+
                 EventCard(
                     title: "Boston Trip",
-                    date: "Event 01",
+                    showPhotoNumber: showPhotoNumbers,
                     selection: $tripItems
                 )
 
                 EventCard(
                     title: "Birthday Dinner",
-                    date: "Event 02",
+                    showPhotoNumber: showPhotoNumbers,
                     selection: $dinnerItems
                 )
             }
@@ -86,7 +89,7 @@ struct ContentView: View {
 
 struct EventCard: View {
     let title: String
-    let date: String
+    let showPhotoNumber: Bool
     @Binding var selection: [PhotosPickerItem]
     @State private var images: [UIImage] = []
     @State private var selectedIndex = 0
@@ -99,7 +102,11 @@ struct EventCard: View {
             HStack {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(title).font(.headline)
-                    Text(date).font(.caption).foregroundStyle(.secondary)
+                    if showPhotoNumber {
+                        Text("\(images.count) \(images.count == 1 ? "photo" : "photos")")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Spacer()
