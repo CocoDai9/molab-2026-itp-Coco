@@ -1,8 +1,9 @@
 # molab-2026-itp-Coco
-Midterm checklist
-[] weekly description of homework progress/challenges in your wiki page
-[] added jht9629-nyu as collab on your repo
-[] uploaded at least one photo in MoGallery TestFlight App
-[] able to build and run example apps own iPhone
-[] installed Xcode 26
-[] watched at least one WWDC video
+
+# Midterm Checklist
+- [ ] Added weekly descriptions of homework progress and challenges to my wiki page
+- [ ] Added `jht9629-nyu` as a collaborator on my repository
+- [ ] Uploaded at least one photo in the MoGallery TestFlight app
+- [ ] Built and ran example apps on my own iPhone
+- [ ] Installed Xcode 26
+- [ ] Watched at least one WWDC video
