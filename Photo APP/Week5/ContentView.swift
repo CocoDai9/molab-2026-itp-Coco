@@ -254,6 +254,7 @@ struct EventCard: View {
     }
 
     private func load(_ items: [PhotosPickerItem]) {
+        guard !items.isEmpty else { return }
         Task {
             var loaded: [UIImage] = []
             for item in items {
@@ -262,7 +263,8 @@ struct EventCard: View {
                     loaded.append(image)
                 }
             }
-            pickedImages = loaded
+            pickedImages.append(contentsOf: loaded)
+            selection.removeAll()
         }
     }
 
@@ -320,8 +322,6 @@ struct EventCard: View {
     }
 
 }
-
-#Preview { ContentView() }
 
 #Preview("Event photos") {
     NavigationStack {
