@@ -7,3 +7,4 @@
 - [ ] Built and ran example apps on my own iPhone
 - [ ] Installed Xcode 27
 - [ ] Watched at least one WWDC video
+- [ ] Upload profile photo to HOS-Lobby app
